@@ -17,6 +17,8 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    private Locale currentLocale;
+
     public Login() {
         initComponents();
     }
@@ -31,24 +33,24 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblJudul = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
         lblPassword = new javax.swing.JLabel();
         txtname = new javax.swing.JTextField();
-        txtpass = new javax.swing.JTextField();
         btnlogin = new javax.swing.JButton();
         btnregister = new javax.swing.JButton();
         cmbChooseLanguage = new javax.swing.JComboBox<>();
         lblChooseLanguage = new javax.swing.JLabel();
+        txtpass = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 255));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Aplikasi Catatan Pribadi Aman Multibahasa");
+        lblJudul.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblJudul.setForeground(new java.awt.Color(0, 0, 0));
+        lblJudul.setText("Aplikasi Catatan Pribadi Aman Multibahasa");
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/note-removebg-preview.png"))); // NOI18N
 
@@ -68,10 +70,6 @@ public class Login extends javax.swing.JFrame {
                 txtnameActionPerformed(evt);
             }
         });
-
-        txtpass.setBackground(new java.awt.Color(255, 255, 255));
-        txtpass.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        txtpass.setForeground(new java.awt.Color(0, 0, 0));
 
         btnlogin.setBackground(new java.awt.Color(255, 204, 204));
         btnlogin.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -104,6 +102,10 @@ public class Login extends javax.swing.JFrame {
         lblChooseLanguage.setForeground(new java.awt.Color(0, 0, 0));
         lblChooseLanguage.setText("Pilih Bahasa :");
 
+        txtpass.setBackground(new java.awt.Color(255, 255, 255));
+        txtpass.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtpass.setForeground(new java.awt.Color(0, 0, 0));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -112,7 +114,7 @@ public class Login extends javax.swing.JFrame {
                 .addGap(97, 97, 97)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(lblJudul)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblChooseLanguage)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -133,9 +135,9 @@ public class Login extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtpass, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtpass)
+                                    .addComponent(txtname, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE))
                                 .addGap(33, 33, 33))))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -145,7 +147,7 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblJudul)
                             .addComponent(lblChooseLanguage)
                             .addComponent(cmbChooseLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(38, 38, 38)
@@ -155,11 +157,11 @@ public class Login extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblUsername)
                             .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36)
+                        .addGap(38, 38, 38)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblPassword)
-                            .addComponent(txtpass, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(50, 50, 50)
+                            .addComponent(txtpass, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(56, 56, 56)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnregister)
                             .addComponent(btnlogin))))
@@ -210,7 +212,7 @@ public class Login extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Berhasil Login");
 
                     this.setVisible(false); // tutup login
-                    new NoteView(userId).setVisible(true);
+                    new NoteView(userId, currentLocale).setVisible(true);
                     // TODO: lanjut ke dashboard
                 } else {
                     JOptionPane.showMessageDialog(this, "Password salah");
@@ -271,52 +273,49 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnlogin;
     private javax.swing.JButton btnregister;
     private javax.swing.JComboBox<String> cmbChooseLanguage;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblChooseLanguage;
+    private javax.swing.JLabel lblJudul;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JTextField txtname;
-    private javax.swing.JTextField txtpass;
+    private javax.swing.JPasswordField txtpass;
     // End of variables declaration//GEN-END:variables
 
-    private void applyLanguage() {
-        String language;
-        String country;
-        Locale locale;
-        int lang = cmbChooseLanguage.getSelectedIndex();
+    private void applyLanguage(){
 
         try {
-            switch (lang) {
-                case 0:
-                    language = "in";
-                    country = "ID";
-                    break;
-                case 1:
-                    language = "en";
-                    country = "US";
-                    break;
-                default:
-                    language = "in";
-                    country = "ID";
-                    break;
-            }
-            locale = new Locale(language, country);
+            int lang = cmbChooseLanguage.getSelectedIndex();
+            Locale[] locales = {
+                new Locale("id", "ID"),
+                new Locale("en", "US")
+            };
+            Locale locale = (lang >= 0 && lang < locales.length) ? locales[lang] : locales[0];
+            
+            currentLocale = locale;
+
             ResourceBundle rb
                     = ResourceBundle.getBundle("localization/Bundle", locale);
             lblChooseLanguage.setText(rb.getString("Login.lblChooseLanguage.text"));
+            lblJudul.setText(rb.getString("Login.lblJudul.text"));
             lblUsername.setText(rb.getString("Login.lblUsername.text"));
             lblPassword.setText(rb.getString("Login.lblPassword.text"));
             btnlogin.setText(rb.getString("Login.btnlogin.text"));
-            int cmbLN = cmbChooseLanguage.getItemCount();
+            btnregister.setText(rb.getString("Login.btnregister.text"));
+
+            String[] langKeys = {"cmbChooseLanguage.0", "cmbChooseLanguage.1"};
             cmbChooseLanguage.removeAllItems();
-            for (int i = 0; i < cmbLN; i++) {
-                cmbChooseLanguage.addItem(rb.getString("cmbChooseLanguage." + i));
+            for (String key : langKeys) {
+                cmbChooseLanguage.addItem(rb.getString(key));
             }
+
             cmbChooseLanguage.setSelectedIndex(lang);
             setTitle(rb.getString("Login.title"));
+
         } catch (Exception e) {
+            e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengganti bahasa.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

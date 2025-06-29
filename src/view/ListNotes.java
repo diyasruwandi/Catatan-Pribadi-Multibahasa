@@ -4,9 +4,23 @@
  */
 package view;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import utils.NoteWrapper;
+import javax.swing.SwingWorker;
+import model.Note;
 
 /**
  *
@@ -15,18 +29,30 @@ import javax.swing.table.DefaultTableModel;
 public class ListNotes extends javax.swing.JFrame {
 
     private int userId;
+    private Locale currentLocale;
+//
+//    public ListNotes() {
+//        initComponents();
+//        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//    }
 
-    public ListNotes() {
+    public ListNotes(int userId, Locale locale) {
+//        this();
+        this.userId = userId;
+        this.currentLocale = locale;
         initComponents();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        applyLanguage();
+        loadTableAsync();
     }
 
-    public ListNotes(int userId) {
-        this();
-        this.userId = userId;
-        loadTable();
-    }
-
+//
+//    public ListNotes(int userId) {
+//        this();
+//        this.userId = userId;
+//
+//        loadTableAsync();
+//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -36,22 +62,33 @@ public class ListNotes extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableNotes = new javax.swing.JTable();
         btnedit = new javax.swing.JButton();
         btndelete = new javax.swing.JButton();
+        progressBar = new javax.swing.JProgressBar();
+        btnBackup = new javax.swing.JButton();
+        btnLoad = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 204, 255));
 
+        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel1.setForeground(new java.awt.Color(0, 0, 0));
+
+        tableNotes.setBackground(new java.awt.Color(204, 255, 204));
         tableNotes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "JUDUL", "ISI", "DIBUAT"
+                "Title 1", "JUDUL", "ISI", "GAMBAR", "DIBUAT"
             }
         ));
         jScrollPane1.setViewportView(tableNotes);
@@ -59,7 +96,7 @@ public class ListNotes extends javax.swing.JFrame {
         btnedit.setBackground(new java.awt.Color(51, 255, 153));
         btnedit.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnedit.setForeground(new java.awt.Color(0, 0, 0));
-        btnedit.setText("EDIT");
+        btnedit.setText("UBAH");
         btnedit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btneditActionPerformed(evt);
@@ -76,32 +113,100 @@ public class ListNotes extends javax.swing.JFrame {
             }
         });
 
+        progressBar.setStringPainted(true);
+
+        btnBackup.setBackground(new java.awt.Color(153, 153, 255));
+        btnBackup.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnBackup.setForeground(new java.awt.Color(0, 0, 0));
+        btnBackup.setText("CADANGKAN");
+        btnBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackupActionPerformed(evt);
+            }
+        });
+
+        btnLoad.setBackground(new java.awt.Color(255, 204, 153));
+        btnLoad.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnLoad.setForeground(new java.awt.Color(0, 0, 0));
+        btnLoad.setText("MUAT");
+        btnLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gambar/space.png"))); // NOI18N
+
+        jButton1.setBackground(new java.awt.Color(204, 204, 255));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/icons8-close-30.png"))); // NOI18N
+        jButton1.setBorderPainted(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnedit)
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(btnBackup)
+                                        .addGap(32, 32, 32)
+                                        .addComponent(btnLoad)
+                                        .addGap(31, 31, 31)
+                                        .addComponent(btndelete))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(34, 34, 34))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addContainerGap())))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btndelete)
+                    .addComponent(btnLoad)
+                    .addComponent(btnBackup)
+                    .addComponent(btnedit))
+                .addGap(168, 168, 168))
+            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(146, 146, 146)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(219, 219, 219)
-                        .addComponent(btnedit)
-                        .addGap(155, 155, 155)
-                        .addComponent(btndelete)))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnedit)
-                    .addComponent(btndelete))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -117,10 +222,11 @@ public class ListNotes extends javax.swing.JFrame {
         int id = (int) tableNotes.getValueAt(selected, 0);
         String title = (String) tableNotes.getValueAt(selected, 1);
         String content = (String) tableNotes.getValueAt(selected, 2);
+        String imagePath = (String) tableNotes.getValueAt(selected, 3);
 
-        NoteView noteView = new NoteView(userId, id, title, content);
+        NoteView noteView = new NoteView(userId, id, title, content, imagePath, currentLocale);
         noteView.setVisible(true);
-        this.dispose(); // tutup jendela list
+        this.dispose();
     }//GEN-LAST:event_btneditActionPerformed
 
     private void btndeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteActionPerformed
@@ -149,6 +255,41 @@ public class ListNotes extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btndeleteActionPerformed
+
+    private void btnBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackupActionPerformed
+        int selectedRow = tableNotes.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih satu catatan terlebih dahulu untuk dibackup.");
+            return;
+        }
+        List<Note> noteList = new ArrayList<>();
+
+        int id = (int) tableNotes.getValueAt(selectedRow, 0);
+        String title = (String) tableNotes.getValueAt(selectedRow, 1);
+        String content = (String) tableNotes.getValueAt(selectedRow, 2);
+        String imagePath = (String) tableNotes.getValueAt(selectedRow, 3);
+        String createdAt = (String) tableNotes.getValueAt(selectedRow, 4);
+
+        noteList.add(new Note(id, title, content, imagePath, createdAt));
+
+        JFileChooser fc = new JFileChooser();
+        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            saveNotesToFile(noteList, file);
+        }
+    }//GEN-LAST:event_btnBackupActionPerformed
+
+    private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
+        JFileChooser fc = new JFileChooser();
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            loadNotesFromFile(file);
+        }
+    }//GEN-LAST:event_btnLoadActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -180,15 +321,21 @@ public class ListNotes extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ListNotes().setVisible(true);
+                new ListNotes(1, new Locale("id", "ID")).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBackup;
+    private javax.swing.JButton btnLoad;
     private javax.swing.JButton btndelete;
     private javax.swing.JButton btnedit;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JProgressBar progressBar;
     private javax.swing.JTable tableNotes;
     // End of variables declaration//GEN-END:variables
 
@@ -197,7 +344,7 @@ public class ListNotes extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) tableNotes.getModel();
             model.setRowCount(0);
 
-            String sql = "SELECT id, title, content, created_at FROM notes WHERE user_id=?";
+            String sql = "SELECT id, title, content, image_path, created_at FROM notes WHERE user_id=?";
             java.sql.Connection con = dbkoneksi.konfig.sambung();
             java.sql.PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, userId);
@@ -207,9 +354,15 @@ public class ListNotes extends javax.swing.JFrame {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 String decrypted = utils.EncryptUtil.decrypt(rs.getString("content"));
+                String imagePath = rs.getString("image_path");
                 String tanggal = rs.getString("created_at");
 
-                model.addRow(new Object[]{id, title, decrypted, tanggal});
+                NoteWrapper<String> noteWrapper = new NoteWrapper<>(decrypted);//menggunakan class generic
+
+                // Debug log
+                System.out.println("Catatan terdekripsi: " + noteWrapper.get());
+
+                model.addRow(new Object[]{id, title, noteWrapper.get(), imagePath, tanggal});
             }
 
             tableNotes.getColumnModel().getColumn(0).setMinWidth(0);
@@ -219,4 +372,84 @@ public class ListNotes extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Gagal load data: " + ex.getMessage());
         }
     }
+
+    private void loadTableAsync() {
+        progressBar.setVisible(true);
+        progressBar.setIndeterminate(true);
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                Thread.sleep(1500);
+                loadTable(); 
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                progressBar.setVisible(false);
+                progressBar.setIndeterminate(false);
+            }
+        };
+        worker.execute();
+    }
+
+    private void saveNotesToFile(List<Note> notes, File file) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(notes);
+            JOptionPane.showMessageDialog(this, "Catatan berhasil dibackup ke file.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Gagal backup: " + e.getMessage());
+        }
+    }
+
+    private void loadNotesFromFile(File file) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            List<Note> notes = (List<Note>) ois.readObject();
+
+            DefaultTableModel model = (DefaultTableModel) tableNotes.getModel();
+//            model.setRowCount(0);
+            for (Note n : notes) {
+                boolean isDuplicate = false;
+                
+                for (int i = 0; i < model.getRowCount(); i++) {
+                int existingId = (int) model.getValueAt(i, 0);
+                if (existingId == n.getId()) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+                if (!isDuplicate) {
+                model.addRow(new Object[]{
+                    n.getId(),
+                    n.getTitle(),
+                    n.getContent(),
+                    n.getImagePath(),
+                    n.getCreatedAt()
+                });
+                }
+                
+//                model.addRow(new Object[]{n.getId(), n.getTitle(), n.getContent(), n.getImagePath(), n.getCreatedAt()});
+            }
+
+            JOptionPane.showMessageDialog(this, "Catatan berhasil dimuat dari file.");
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "Gagal load: " + e.getMessage());
+        }
+    }
+
+    private void applyLanguage() {
+        try {
+            ResourceBundle rb = ResourceBundle.getBundle("localization/Bundle", currentLocale);
+
+//            setTitle(rb.getString("NoteView.title"));
+            btnedit.setText(rb.getString("ListNotes.btnedit.text"));
+            btnBackup.setText(rb.getString("ListNotes.btnBackup.text"));
+            btnLoad.setText(rb.getString("ListNotes.btnLoad.text"));
+            btndelete.setText(rb.getString("ListNotes.btndelete.text"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

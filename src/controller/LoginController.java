@@ -11,7 +11,7 @@ public class LoginController {
         String hashed = CryptoUtil.hashPassword(password);
         String sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)";
 
-        try (Connection conn = konfig.sambung();  // menggunakan koneksi buatanmu
+        try (Connection conn = konfig.sambung();  
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
@@ -28,7 +28,7 @@ public class LoginController {
     public static boolean loginUser(String username, String password) {
         String sql = "SELECT password_hash FROM users WHERE username = ?";
 
-        try (Connection conn = konfig.sambung();  // menggunakan koneksi buatanmu
+        try (Connection conn = konfig.sambung();  
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);

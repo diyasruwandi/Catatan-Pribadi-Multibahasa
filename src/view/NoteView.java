@@ -4,8 +4,14 @@
  */
 package view;
 
+import java.awt.Image;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import utils.EncryptUtil;
 
@@ -17,24 +23,30 @@ public class NoteView extends javax.swing.JFrame {
 
     private int userId;
     private Integer noteId = null;
+    private Locale currentLocale;
 
     /**
      * Creates new form NoteView
      */
-    public NoteView() {
+    public NoteView(int userId, Locale locale) {
         initComponents();
-    }
-
-    public NoteView(int userId) {
-        this();
         this.userId = userId;
+        this.currentLocale = locale;
+        applyLanguage(); // terapkan bahasa
     }
 
-    public NoteView(int userId, int noteId, String title, String content) {
-        this(userId);
+    public NoteView(int userId, int noteId, String title, String content, String imagePath, Locale locale) {
+        this(userId, locale); // Harus jadi baris pertama
         this.noteId = noteId;
         txttitle.setText(title);
         txtcontent.setText(content);
+        txtImagePath.setText(imagePath);
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            ImageIcon icon = new ImageIcon(imagePath);
+            Image image = icon.getImage().getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+            lblgambar.setIcon(new ImageIcon(image));
+        }
     }
 
     /**
@@ -50,12 +62,16 @@ public class NoteView extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txttitle = new javax.swing.JTextField();
         lbltanggal = new javax.swing.JLabel();
+        btntambahgambar = new javax.swing.JButton();
+        txtImagePath = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtcontent = new javax.swing.JTextArea();
         btnsave = new javax.swing.JButton();
         btnviewnotes = new javax.swing.JButton();
+        lblgambar = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,28 +85,60 @@ public class NoteView extends javax.swing.JFrame {
         txttitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         txttitle.setForeground(new java.awt.Color(0, 0, 0));
 
+        btntambahgambar.setBackground(new java.awt.Color(204, 255, 204));
+        btntambahgambar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btntambahgambar.setForeground(new java.awt.Color(0, 0, 0));
+        btntambahgambar.setText("PILIH GAMBAR");
+        btntambahgambar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntambahgambarActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(204, 204, 204));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/logout.png"))); // NOI18N
+        jButton1.setBorderPainted(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(txttitle, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
-                .addComponent(lbltanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, Short.MAX_VALUE)
+                .addComponent(btntambahgambar)
+                .addGap(18, 18, 18)
+                .addComponent(txtImagePath, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbltanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
+                .addGap(9, 9, 9)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbltanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(txtImagePath, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btntambahgambar)
                     .addComponent(txttitle, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbltanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                    .addComponent(jLabel1))
+                .addGap(24, 24, 24))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -104,7 +152,6 @@ public class NoteView extends javax.swing.JFrame {
 
         txtcontent.setBackground(new java.awt.Color(204, 204, 255));
         txtcontent.setColumns(20);
-        txtcontent.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtcontent.setForeground(new java.awt.Color(0, 0, 0));
         txtcontent.setRows(5);
         jScrollPane2.setViewportView(txtcontent);
@@ -133,26 +180,31 @@ public class NoteView extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(188, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(btnsave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(270, 270, 270)
                         .addComponent(btnviewnotes))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(182, 182, 182))
+                .addGap(57, 57, 57)
+                .addComponent(lblgambar, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblgambar, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(46, 46, 46)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnsave)
                     .addComponent(btnviewnotes))
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.CENTER);
@@ -165,26 +217,68 @@ public class NoteView extends javax.swing.JFrame {
             String title = txttitle.getText();
             String content = txtcontent.getText();
             String encryptedContent = EncryptUtil.encrypt(content);
+            String imagePath = txtImagePath.getText();
 
-            String sql = "INSERT INTO notes (user_id, title, content) VALUES (?, ?, ?)";
             java.sql.Connection con = dbkoneksi.konfig.sambung();
-            java.sql.PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, userId);
-            pst.setString(2, title);
-            pst.setString(3, encryptedContent);
+            java.sql.PreparedStatement pst;
+
+            if (noteId == null || noteId == 0) {
+                // TAMBAH catatan baru
+                String sql = "INSERT INTO notes (user_id, title, content, image_path, created_at) VALUES (?, ?, ?, ?, NOW())";
+                pst = con.prepareStatement(sql);
+                pst.setInt(1, userId);
+                pst.setString(2, title);
+                pst.setString(3, encryptedContent);
+                pst.setString(4, imagePath);
+            } else {
+                // EDIT catatan lama
+                String sql = "UPDATE notes SET title=?, content=?, image_path=? WHERE id=?";
+                pst = con.prepareStatement(sql);
+                pst.setString(1, title);
+                pst.setString(2, encryptedContent);
+                pst.setString(3, imagePath);
+                pst.setInt(4, noteId);
+            }
             pst.executeUpdate();
 
             JOptionPane.showMessageDialog(this, "Catatan berhasil disimpan!");
             txttitle.setText("");
             txtcontent.setText("");
+            txtImagePath.setText("");
+            lblgambar.setIcon(null);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Gagal Menyimpan : " + e.getMessage());
         }
     }//GEN-LAST:event_btnsaveActionPerformed
 
     private void btnviewnotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnviewnotesActionPerformed
-        new ListNotes(userId).setVisible(true);
+        new ListNotes(userId, currentLocale).setVisible(true);
     }//GEN-LAST:event_btnviewnotesActionPerformed
+
+    private void btntambahgambarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntambahgambarActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            String imagePath = file.getAbsolutePath();
+            txtImagePath.setText(imagePath);
+
+            // Tampilkan ke JLabel
+            ImageIcon icon = new ImageIcon(imagePath);
+
+            // Resize biar pas ke label
+            Image image = icon.getImage().getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+            icon = new ImageIcon(image);
+
+            lblgambar.setIcon(icon);
+        }
+    }//GEN-LAST:event_btntambahgambarActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dispose();
+        new Login().setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -214,23 +308,47 @@ public class NoteView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        final int userId = 1;
+        final Locale currentLocale = new Locale("en", "US");
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NoteView().setVisible(true);
+                new NoteView(userId, currentLocale).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnsave;
+    private javax.swing.JButton btntambahgambar;
     private javax.swing.JButton btnviewnotes;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblgambar;
     private javax.swing.JLabel lbltanggal;
+    private javax.swing.JTextField txtImagePath;
     private javax.swing.JTextArea txtcontent;
     private javax.swing.JTextField txttitle;
     // End of variables declaration//GEN-END:variables
+
+    private void applyLanguage() {
+        if (currentLocale == null) {
+            currentLocale = new Locale("id", "ID");
+        }
+        try {
+            ResourceBundle rb = ResourceBundle.getBundle("localization/Bundle", currentLocale);
+
+//            setTitle(rb.getString("NoteView.title"));
+            jLabel1.setText(rb.getString("NoteView.jLabel1.text"));
+            btntambahgambar.setText(rb.getString("NoteView.btntambahgambar.text"));
+            btnsave.setText(rb.getString("NoteView.btnsave.text"));
+            btnviewnotes.setText(rb.getString("NoteView.btnviewnotes.text"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

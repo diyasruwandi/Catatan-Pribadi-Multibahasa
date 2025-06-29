@@ -8,6 +8,19 @@ package utils;
  *
  * @author DIYAS
  */
-public class SerializationUtil {
-    
+public class NoteWrapper<T> {
+
+    private T data;
+
+    public NoteWrapper(T data) {
+        this.data = data;
+    }
+
+    public T get() {
+        return data;
+    }
+
+    public void set(T data) {
+        this.data = data;
+    }
 }
